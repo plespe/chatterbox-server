@@ -12,6 +12,9 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
+var qs = require('querystring');
+var storage = [];
+
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -31,6 +34,7 @@ var requestHandler = function(request, response) {
   // The outgoing status.
   var statusCode = 200;
 
+
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
@@ -46,7 +50,22 @@ var requestHandler = function(request, response) {
       response.end("Hello, World!");
     }
   } else if (request.method === "POST") {
+    console.log(request.url);
+    if (request.url === "/classes/room1") {
+      var requestBody = "";
+      request.on("data", function(data){
+        requestBody += data;
+        console.log("receive data, data is: ",data);
+        console.log(" request body is: ", requestBody);
+      });
+    }
+    request.on('end', function(){
+      // var formData = qs.parse(requestBody);
+      storage.push(requestBody);
+      console.log("end of Post, storage is: ",storage);
+      response.writeHead(statusCode, headers);
 
+    })
 
   }
 
