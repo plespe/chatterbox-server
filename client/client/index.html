@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- dependencies -->
+    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/underscore.string/dist/underscore.string.min.js"></script>
+    <script src="bower_components/backbone/backbone-min.js"></script>
+
+    <!-- your scripts -->
+
+    <script src="env/config.js"></script>
+    <script src="scripts/app.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <h1>chatterbox </h1>
+      <h5>Filter Room: <span id="currentRoom">public</span></h5>
+      <h5>Filter Friend: <span id="currentFriend">everyone</span></h5>
+      <!-- Your HTML goes here! -->
+      <input type="text" name="user" placeholder="nickname">
+      <input type="text" name="mymessage" placeholder="message">
+      <input type="text" name="myroom" placeholder="room name" value="public">
+      <button type="button" id="sendButton">Send</button>
+
+      <div id="roomSelectWrapper">
+        <div>
+          <span>Rooms: </span>
+          <select id="roomSelect">
+          <option value="EVERYROOM">EVERYROOM</option>
+          <option value="bryan">bryan</option>
+          </select>
+        </div>
+        <div>
+          <span>Friends: </span>
+          <select id="friendSelect">
+            <option value="EVERYONE">EVERYONE</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="chats">
+      Loading messages...
+    </div>
+    <script>
+      //$(function(){
+        var messages = new Messages();
+        messages.loadMsgs();
+        var messagesView = new MessagesView({el: $('#chats'), collection: messages});
+        var formView = new FormView({el: $('#main'), collection: messages });
+        // setInterval(messages.loadMsgs.bind(messages), 1000)
+      //});
+
+    </script>
+  </body>
+</html>

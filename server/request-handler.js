@@ -28,18 +28,34 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
-
   // The outgoing status.
   var statusCode = 200;
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
+  if (request.method === "GET") {
+    if (request.url === "/favicon.ico") {
+      response.writeHead(404, {'Content-Type': 'text/html'});
+      response.write('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
+      response.end();
+    } else {
+      response.writeHead(statusCode, headers);
+      response.write(JSON.stringify({a: 123, b: 3445}));
+      console.log("Get got!!")
+      response.end("Hello, World!");
+    }
+  } else if (request.method === "POST") {
+
+
+  }
+
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "text/plain";
+  // headers['Content-Type'] = "text/plain";
+  headers['Content-Type'] = "application/json";
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
@@ -71,3 +87,5 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
+
+exports.requestHandler = requestHandler
