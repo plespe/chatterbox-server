@@ -13,6 +13,7 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var qs = require('querystring');
+var url = require('url');
 var storage = [];
 
 var requestHandler = function(request, response) {
@@ -38,36 +39,67 @@ var requestHandler = function(request, response) {
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
+  // request.setEncoding("application/json");
+  console.log("url is: , ",request.url )
   if (request.method === "GET") {
-    if (request.url === "/favicon.ico") {
-      response.writeHead(404, {'Content-Type': 'text/html'});
-      response.write('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
-      response.end();
+    if (request.url === "/classes/room1" || request.url === "/log" || request.url === '/classes/messages'  ) {
+      statusCode = 200;
     } else {
-      response.writeHead(statusCode, headers);
-      response.write(JSON.stringify({a: 123, b: 3445}));
-      console.log("Get got!!")
-      response.end("Hello, World!");
+      statusCode = 404;
     }
+    // var theUrl = url.parse(request.url);
+    // console.log("theUrl : ", theUrl);
+
+    // var queryObj = qs.parse(theUrl.query);
+    // console.log("queryObj : ", queryObj);
+
+    // var obj = JSON.parse(queryObj.jsonData);
+    // console.log("obj : ", obj);
+
+    // if (request.url === "/favicon.ico") {
+    //   response.writeHead(404, {'Content-Type': 'text/html'});
+    //   response.write('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
+    //   response.end();
+    // } else {
+    //   if (request.url === /classes/room1)
+    //   response.writeHead(statusCode, headers);
+    //   // response.write(JSON.stringify(storage));
+    //   // var dataget = JSON.stringify(storage);
+    //   var dataget;
+
+    //   // for (var i = 0; i < storage.length; i++){
+    //   //   dataget = storage[i];
+    //   //   console.log(dataget);
+    //   //   response.write(dataget, "application/json")
+    //   // }
+
+
+    //   response.end(function(){
+    //     console.log("Get got!! storage: ", dataget)
+    //   });
+    // }
+
   } else if (request.method === "POST") {
     console.log(request.url);
-    if (request.url === "/classes/room1") {
-      var requestBody = "";
-      request.on("data", function(data){
-        requestBody += data;
-        console.log("receive data, data is: ",data);
-        console.log(" request body is: ", requestBody);
-      });
-    }
-    request.on('end', function(){
-      // var formData = qs.parse(requestBody);
-      storage.push(requestBody);
-      console.log("end of Post, storage is: ",storage);
-      response.writeHead(statusCode, headers);
+    statusCode = 201;
+    var requestBody = "";
 
-    })
+    request.on("data", function(data){
+      requestBody += data;
+      console.log("receive data, JSON parse data is: ",data);
+      console.log(" request body is: ", requestBody);
+      console.log("storage is: ", storage)
+    });
+
+    request.on('end', function(){
+      // storage.push(requestBody);
+      var formData = JSON.parse(requestBody);
+      storage.push(formData);
+      console.log("end of Post, storage is: " + storage);
+    });
 
   }
+
 
   // Tell the client we are sending them plain text.
   //
@@ -76,6 +108,7 @@ var requestHandler = function(request, response) {
   // headers['Content-Type'] = "text/plain";
   headers['Content-Type'] = "application/json";
 
+  console.log('statuscode is ', statusCode)
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
@@ -87,7 +120,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end("Hello, World!");
+  response.end(JSON.stringify({results: storage}));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).

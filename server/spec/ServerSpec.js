@@ -27,8 +27,8 @@ describe('Node Server Request Listener Function', function() {
   it('Should send back parsable stringified JSON', function() {
     var req = new stubs.request('/classes/room1', 'GET');
     var res = new stubs.response();
-
     handler.requestHandler(req, res);
+    console.log(res._data);
 
     expect(JSON.parse.bind(this, res._data)).to.not.throw();
     expect(res._ended).to.equal(true);
