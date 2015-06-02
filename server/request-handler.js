@@ -15,8 +15,110 @@ this file and include it in basic-server.js so that it actually works.
 var qs = require('querystring');
 var url = require('url');
 var storage = [];
+var fs = require('fs');
+var path = require("path");
 
 var requestHandler = function(request, response) {
+
+/*
+  var now = new Date();
+  var req = request;
+  var res = response;
+
+  var filename = req.url || "index.html";
+  var ext = path.extname(filename);
+  var localPath = "../client/client";
+  var validExtensions = {
+    ".html" : "text/html",
+    ".js": "application/javascript",
+    ".css": "text/css",
+    ".txt": "text/plain",
+    ".jpg": "image/jpeg",
+    ".gif": "image/gif",
+    ".png": "image/png"
+  };
+
+  var isValidExt = validExtensions[ext];
+
+  if (isValidExt) {
+
+    localPath += filename;
+    path.exists(localPath, function(exists) {
+      if(exists) {
+        console.log("Serving file: " + localPath);
+        getFile(localPath, res, isValidExt);
+      } else {
+        console.log("File not found: " + localPath);
+        res.writeHead(404);
+        res.end();
+      }
+    });
+
+  } else {
+    console.log("Invalid file extension detected: " + ext)
+  }
+
+  function getFile(localPath, res, mimeType) {
+    fs.readFile(localPath, function(err, contents) {
+      if(!err) {
+        res.setHeader("Content-Length", contents.length);
+        res.setHeader("Content-Type", mimeType);
+        res.statusCode = 200;
+        res.end(contents);
+      } else {
+        res.writeHead(500);
+        res.end();
+      }
+    });
+  }
+*/
+
+
+
+// ==========  ORIGINAL CODE =======
+
+  if (request.method === "GET") {
+    console.log
+    if (request.url === "/" && request.url !== "/classes/room1" && request.url !== '/classes/messages') {
+      // fs.readdir('../client/client/bower_components',function (err, files){
+      //   response.writeHead(200, {'Content-Type': 'text/javascript','Content-Length':files.length});
+      //   for (var i = 0; i < files.length; i++) {
+      //     console.log(files[i]);
+      //     response.write(files[i]);
+      //   }
+      // });
+
+
+
+      fs.readFile('../client/client/index.html',function (err, data) {
+        response.writeHead(200, {'Content-Type': 'text/html','Content-Length':data.length});
+        console.log("data is -- ,", data );
+        response.write(data);
+
+           fs.readFile('../client/client/bower_components/jquery/jquery.min.js', function(err, data){
+             response.write(data);
+           });
+
+           fs.readFile('../client/client/bower_components/underscore/underscore-min.js', function(err, data){
+             response.write(data);
+           });
+           fs.readFile('../client/client/bower_components/underscore.string/dist/underscore.string.min.js', function(err, data){
+             response.write(data);
+           });
+
+          fs.readFile('../client/client/env/config.js', function(err, data){
+             response.write(data);
+           });
+
+           fs.readFile('../client/client/scripts/app.js', function(err, data){
+             response.write(data);
+           });
+
+
+        response.end();
+      });
+    }
+  }
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -40,10 +142,33 @@ var requestHandler = function(request, response) {
   var headers = defaultCorsHeaders;
 
   // request.setEncoding("application/json");
-  console.log("url is: , ",request.url )
   if (request.method === "GET") {
+     fs.readFile('../client/client/bower_components/jquery/jquery.min.js', function(err, data){
+       response.write(data);
+     });
+
+     fs.readFile('../client/client/bower_components/underscore/underscore-min.js', function(err, data){
+       response.write(data);
+     });
+     fs.readFile('../client/client/bower_components/underscore.string/dist/underscore.string.min.js', function(err, data){
+       response.write(data);
+     });
+
+    fs.readFile('../client/client/env/config.js', function(err, data){
+       response.write(data);
+     });
+
+     fs.readFile('../client/client/scripts/app.js', function(err, data){
+       response.write(data);
+     });
+
+    console.log("url is: , ",request.url )
+
     if (request.url === "/classes/room1" || request.url === "/log" || request.url === '/classes/messages'  ) {
+      console.log("hello?");
       statusCode = 200;
+      response.writeHead(statusCode, headers);
+      response.end
     } else {
       statusCode = 404;
     }
@@ -110,8 +235,9 @@ var requestHandler = function(request, response) {
 
   console.log('statuscode is ', statusCode)
   // .writeHead() writes to the request line and headers of the response,
+  //
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  // response.writeHead(statusCode, headers);
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -120,7 +246,8 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(JSON.stringify({results: storage}));
+  //
+  // response.end(JSON.stringify({results: storage}));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).

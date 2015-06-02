@@ -9,7 +9,6 @@
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/underscore.string/dist/underscore.string.min.js"></script>
-    <script src="bower_components/backbone/backbone-min.js"></script>
 
     <!-- your scripts -->
 
@@ -32,7 +31,6 @@
           <span>Rooms: </span>
           <select id="roomSelect">
           <option value="EVERYROOM">EVERYROOM</option>
-          <option value="bryan">bryan</option>
           </select>
         </div>
         <div>
@@ -46,15 +44,5 @@
     <div id="chats">
       Loading messages...
     </div>
-    <script>
-      //$(function(){
-        var messages = new Messages();
-        messages.loadMsgs();
-        var messagesView = new MessagesView({el: $('#chats'), collection: messages});
-        var formView = new FormView({el: $('#main'), collection: messages });
-        // setInterval(messages.loadMsgs.bind(messages), 1000)
-      //});
-
-    </script>
   </body>
 </html>
