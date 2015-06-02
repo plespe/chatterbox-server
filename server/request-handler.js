@@ -20,189 +20,93 @@ var path = require("path");
 
 var requestHandler = function(request, response) {
 
-/*
-  var now = new Date();
-  var req = request;
-  var res = response;
-
-  var filename = req.url || "index.html";
-  var ext = path.extname(filename);
-  var localPath = "../client/client";
-  var validExtensions = {
-    ".html" : "text/html",
-    ".js": "application/javascript",
-    ".css": "text/css",
-    ".txt": "text/plain",
-    ".jpg": "image/jpeg",
-    ".gif": "image/gif",
-    ".png": "image/png"
-  };
-
-  var isValidExt = validExtensions[ext];
-
-  if (isValidExt) {
-
-    localPath += filename;
-    path.exists(localPath, function(exists) {
-      if(exists) {
-        console.log("Serving file: " + localPath);
-        getFile(localPath, res, isValidExt);
-      } else {
-        console.log("File not found: " + localPath);
-        res.writeHead(404);
-        res.end();
-      }
-    });
-
-  } else {
-    console.log("Invalid file extension detected: " + ext)
-  }
-
-  function getFile(localPath, res, mimeType) {
-    fs.readFile(localPath, function(err, contents) {
-      if(!err) {
-        res.setHeader("Content-Length", contents.length);
-        res.setHeader("Content-Type", mimeType);
-        res.statusCode = 200;
-        res.end(contents);
-      } else {
-        res.writeHead(500);
-        res.end();
-      }
-    });
-  }
-*/
-
-
-
 // ==========  ORIGINAL CODE =======
-
-  if (request.method === "GET") {
-    console.log
-    if (request.url === "/" && request.url !== "/classes/room1" && request.url !== '/classes/messages') {
-      // fs.readdir('../client/client/bower_components',function (err, files){
-      //   response.writeHead(200, {'Content-Type': 'text/javascript','Content-Length':files.length});
-      //   for (var i = 0; i < files.length; i++) {
-      //     console.log(files[i]);
-      //     response.write(files[i]);
-      //   }
-      // });
-
-
-
-      fs.readFile('../client/client/index.html',function (err, data) {
-        response.writeHead(200, {'Content-Type': 'text/html','Content-Length':data.length});
-        console.log("data is -- ,", data );
-        response.write(data);
-
-           fs.readFile('../client/client/bower_components/jquery/jquery.min.js', function(err, data){
-             response.write(data);
-           });
-
-           fs.readFile('../client/client/bower_components/underscore/underscore-min.js', function(err, data){
-             response.write(data);
-           });
-           fs.readFile('../client/client/bower_components/underscore.string/dist/underscore.string.min.js', function(err, data){
-             response.write(data);
-           });
-
-          fs.readFile('../client/client/env/config.js', function(err, data){
-             response.write(data);
-           });
-
-           fs.readFile('../client/client/scripts/app.js', function(err, data){
-             response.write(data);
-           });
-
-
-        response.end();
-      });
-    }
-  }
-  // Request and Response come from node's http module.
-  //
-  // They include information about both the incoming request, such as
-  // headers and URL, and about the outgoing response, such as its status
-  // and content.
-  //
-  // Documentation for both request and response can be found in the HTTP section at
-  // http://nodejs.org/documentation/api/
-
-  // Do some basic logging.
-  //
-  // Adding more logging to your server can be an easy way to get passive
-  // debugging help, but you should always be careful about leaving stray
-  // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
   // The outgoing status.
   var statusCode = 200;
-
-
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
-  // request.setEncoding("application/json");
   if (request.method === "GET") {
+
+    if (request.url === "/") {
+      fs.readFile('../client/client/index.html',function (err, data) {
+        response.writeHead(statusCode, {'Content-Type': 'text/html','Content-Length':data.length});
+        console.log("data is -- ,", data );
+        response.write(data);
+        response.end();
+      });
+    }
+
+    else if (request.url === "/styles/styles.css") {
+     fs.readFile('../client/client/styles/styles.css', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/css','Content-Length':data.length});
+       response.write(data);
+       response.end();
+     });
+    }
+
+    else if (request.url === "/bower_components/jquery/jquery.min.js") {
      fs.readFile('../client/client/bower_components/jquery/jquery.min.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
        response.write(data);
+       response.end();
      });
+    }
 
+    else if (request.url === "/bower_components/underscore/underscore-min.js") {
      fs.readFile('../client/client/bower_components/underscore/underscore-min.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
        response.write(data);
+       response.end();
      });
+    }
+
+    else if (request.url === "/bower_components/underscore.string/dist/underscore.string.min.js") {
      fs.readFile('../client/client/bower_components/underscore.string/dist/underscore.string.min.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
        response.write(data);
+       response.end();
      });
+    }
 
-    fs.readFile('../client/client/env/config.js', function(err, data){
+    else if (request.url === "/bower_components/backbone/backbone-min.js") {
+     fs.readFile('../client/client/bower_components/backbone/backbone-min.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
        response.write(data);
+       response.end();
      });
+    }
 
+    else if (request.url === "/env/config.js") {
+     fs.readFile('../client/client/env/config.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
+       response.write(data);
+       response.end();
+     });
+    }
+
+    else if (request.url === "/scripts/app.js") {
      fs.readFile('../client/client/scripts/app.js', function(err, data){
+       response.writeHead(statusCode, {'Content-Type': 'text/javascript','Content-Length':data.length});
        response.write(data);
+       response.end();
      });
+    }
 
-    console.log("url is: , ",request.url )
-
-    if (request.url === "/classes/room1" || request.url === "/log" || request.url === '/classes/messages'  ) {
-      console.log("hello?");
+    else if (request.url === "/classes/room1" || request.url === "/log" || request.url === '/classes/messages'  ) {
       statusCode = 200;
       response.writeHead(statusCode, headers);
-      response.end
+      response.end(JSON.stringify({results: storage}));
     } else {
       statusCode = 404;
+      response.writeHead(statusCode, headers);
+      response.end();
     }
-    // var theUrl = url.parse(request.url);
-    // console.log("theUrl : ", theUrl);
 
-    // var queryObj = qs.parse(theUrl.query);
-    // console.log("queryObj : ", queryObj);
-
-    // var obj = JSON.parse(queryObj.jsonData);
-    // console.log("obj : ", obj);
-
-    // if (request.url === "/favicon.ico") {
-    //   response.writeHead(404, {'Content-Type': 'text/html'});
-    //   response.write('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
-    //   response.end();
-    // } else {
-    //   if (request.url === /classes/room1)
-    //   response.writeHead(statusCode, headers);
-    //   // response.write(JSON.stringify(storage));
-    //   // var dataget = JSON.stringify(storage);
-    //   var dataget;
-
-    //   // for (var i = 0; i < storage.length; i++){
-    //   //   dataget = storage[i];
-    //   //   console.log(dataget);
-    //   //   response.write(dataget, "application/json")
-    //   // }
+    // console.log("url is: , ",request.url )
 
 
-    //   response.end(function(){
-    //     console.log("Get got!! storage: ", dataget)
-    //   });
-    // }
 
   } else if (request.method === "POST") {
     console.log(request.url);
@@ -221,6 +125,7 @@ var requestHandler = function(request, response) {
       var formData = JSON.parse(requestBody);
       storage.push(formData);
       console.log("end of Post, storage is: " + storage);
+      response.end();
     });
 
   }
