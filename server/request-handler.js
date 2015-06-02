@@ -19,12 +19,16 @@ var fs = require('fs');
 var path = require("path");
 
 var requestHandler = function(request, response) {
+  fs.readFile('../client/client/messageStorage.json', function read(err, data){
+    console.log("readFile data, ", data);
+    // storage = JSON.parse(data);
+  });
+
+  console.log("storage readfile is:, ", storage)
 
 // ==========  ORIGINAL CODE =======
   console.log("Serving request type " + request.method + " for url " + request.url);
-  // The outgoing status.
   var statusCode = 200;
-  // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
   if (request.method === "GET") {
@@ -98,13 +102,12 @@ var requestHandler = function(request, response) {
       statusCode = 200;
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify({results: storage}));
+
     } else {
       statusCode = 404;
       response.writeHead(statusCode, headers);
       response.end();
     }
-
-    // console.log("url is: , ",request.url )
 
 
 
@@ -124,6 +127,11 @@ var requestHandler = function(request, response) {
       // storage.push(requestBody);
       var formData = JSON.parse(requestBody);
       storage.push(formData);
+
+      fs.writeFile("../client/client/messageStorage.json", JSON.stringify(storage), function(){
+        console.log("writeFile is, ",JSON.stringify(storage) )
+      });
+
       console.log("end of Post, storage is: " + storage);
       response.end();
     });
